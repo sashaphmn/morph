@@ -37,7 +37,7 @@ func NewStore(config *Config, home string) (*Store, error) {
 		if home == "" {
 			return nil, fmt.Errorf("either Home or DB path has to be provided")
 		}
-		dbPath = filepath.Join(home, "node-data")
+		dbPath = filepath.Join(home, "oracle-data")
 	}
 
 	if config.DatabaseFreezer == "" {
