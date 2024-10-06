@@ -136,7 +136,7 @@ func NewOracle(cfg *config.Config, m *metrics.Metrics) (*Oracle, error) {
 
 	log.Root().SetHandler(log.LvlFilterHandler(logLevel, logHandler))
 
-	store, err := db.NewStore(nil, "staking-oracle")
+	store, err := db.NewStore(db.DefaultConfig(), "staking-oracle")
 	if err != nil {
 		return nil, err
 	}
@@ -255,15 +255,15 @@ func NewOracle(cfg *config.Config, m *metrics.Metrics) (*Oracle, error) {
 }
 
 func (o *Oracle) Start() {
-	go func() {
-		o.setStartBlock()
-		for {
-			if err := o.syncRewardEpoch(); err != nil {
-				log.Error("syncReward Epoch failed", "error", err)
-				time.Sleep(30 * time.Second)
-			}
-		}
-	}()
+	//go func() {
+	//	o.setStartBlock()
+	//	for {
+	//		if err := o.syncRewardEpoch(); err != nil {
+	//			log.Error("syncReward Epoch failed", "error", err)
+	//			time.Sleep(30 * time.Second)
+	//		}
+	//	}
+	//}()
 
 	//go func() {
 	//	for {
