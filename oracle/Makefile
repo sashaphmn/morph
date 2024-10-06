@@ -7,8 +7,15 @@ LDFLAGSSTRING +=-X main.GitCommit=$(GITCOMMIT)
 LDFLAGSSTRING +=-X main.GitDate=$(GITDATE)
 LDFLAGS := -ldflags "$(LDFLAGSSTRING)"
 
+PLATFORM ?= pc
+
+ifeq (${PLATFORM},server)
+    export GOOS=linux
+    export GOARCH=386
+endif
+
 build:
-	env GO111MODULE=on CGO_LDFLAGS="-ldl" go build -o build/bin/staking-oracle -v $(LDFLAGS) ./cmd/staking-oracle
+	env GO111MODULE=on  CGO_ENABLED="1"  CGO_LDFLAGS="-ldl" go build -o build/bin/staking-oracle -v $(LDFLAGS) ./cmd/staking-oracle
 
 clean:
 	rm -r build

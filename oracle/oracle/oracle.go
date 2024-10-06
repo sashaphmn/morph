@@ -265,14 +265,14 @@ func (o *Oracle) Start() {
 		}
 	}()
 
-	go func() {
-		for {
-			if err := o.submitRecord(); err != nil {
-				log.Error("reward submission batch failed", "error", err)
-				time.Sleep(30 * time.Second)
-			}
-		}
-	}()
+	//go func() {
+	//	for {
+	//		if err := o.submitRecord(); err != nil {
+	//			log.Error("reward submission batch failed", "error", err)
+	//			time.Sleep(30 * time.Second)
+	//		}
+	//	}
+	//}()
 
 	if o.enable {
 		go func() {

@@ -7,12 +7,12 @@ COPY . /staking-oracle
 
 WORKDIR /staking-oracle
 
-RUN make staking-oracle
+RUN make build
 
 # Pull Geth into a second stage deploy alpine container
 FROM alpine:latest
 
 RUN apk add --no-cache ca-certificates
-COPY --from=builder /staking-oracle/staking-oracle /usr/local/bin/
+COPY --from=builder /staking-oracle/bin/staking-oracle /usr/local/bin/
 
 CMD ["staking-oracle"]
