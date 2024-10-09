@@ -136,7 +136,7 @@ func NewOracle(cfg *config.Config, m *metrics.Metrics) (*Oracle, error) {
 
 	log.Root().SetHandler(log.LvlFilterHandler(logLevel, logHandler))
 
-	store, err := db.NewStore(db.DefaultConfig(), "staking-oracle")
+	store, err := db.NewStore(db.DefaultConfig(), "build/data")
 	if err != nil {
 		return nil, err
 	}
