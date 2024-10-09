@@ -52,3 +52,7 @@ type ChangeContext struct {
 	L1Synced            uint64
 	L2synced            uint64
 }
+
+func DefaultChangeContext() *ChangeContext {
+	return nil
+}
