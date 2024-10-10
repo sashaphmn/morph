@@ -286,10 +286,12 @@ func (m *MockClient) UploadRollupEpoch(recordRollupEpochInfos []bindings.IRecord
 }
 
 func (m *MockClient) LatestRollupEpoch() (*bindings.IRecordRollupEpochInfo, error) {
-	return nil, nil
+	return &m.recordRollupEpochInfo, nil
 }
 
 func (m *MockClient) UploadRewardsEpoch(recordRewardsEpochInfos []bindings.IRecordRewardEpochInfo) error {
+	index := recordRewardsEpochInfos[len(recordRewardsEpochInfos)-1].Index
+	m.nextRewardEpochIndex = index.Add(index, big.NewInt(1))
 	return nil
 }
 
