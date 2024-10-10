@@ -280,6 +280,14 @@ type MockClient struct {
 	batchEpochIndex       *big.Int
 }
 
+func NewMockClient() RecordManager {
+	return &MockClient{
+		recordRollupEpochInfo: bindings.IRecordRollupEpochInfo{},
+		nextRewardEpochIndex:  big.NewInt(1),
+		batchEpochIndex:       big.NewInt(0),
+	}
+}
+
 func (m *MockClient) UploadRollupEpoch(recordRollupEpochInfos []bindings.IRecordRollupEpochInfo) error {
 	m.recordRollupEpochInfo = recordRollupEpochInfos[len(recordRollupEpochInfos)-1]
 	return nil

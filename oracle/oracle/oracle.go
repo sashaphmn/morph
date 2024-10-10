@@ -210,7 +210,7 @@ func NewOracle(cfg *config.Config, m *metrics.Metrics) (*Oracle, error) {
 	signer := coretypes.LatestSignerForChainID(chainId)
 	var recordManager RecordManager
 	if cfg.MockRecord {
-
+		recordManager = NewMockClient()
 	} else {
 		recordManager = NewRecordClient(
 			l2Client,
