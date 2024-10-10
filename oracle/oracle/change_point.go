@@ -157,6 +157,7 @@ func (o *Oracle) recordRollupEpoch() error {
 		lastEpoch.EndTime = big.NewInt(int64(header.Time))
 		lastEpoch.Index = big.NewInt(0)
 	}
+	log.Info("latest record info", "l2Latest", l2Latest, "l2End", l2End, "lastEpoch", lastEpoch)
 	//o.PruneChangeCtx()
 	changePointIndex := 0
 	for i, cp := range o.ChangeCtx.ChangePoints {

@@ -277,6 +277,7 @@ func (o *Oracle) Start() {
 	if o.enable {
 		go func() {
 			for {
+				log.Info("record rollup epoch start")
 				if err := o.recordRollupEpoch(); err != nil {
 					log.Error("record rollup epoch failed", "error", err)
 					time.Sleep(30 * time.Second)
