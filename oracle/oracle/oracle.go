@@ -90,7 +90,6 @@ type Oracle struct {
 	rm                  RecordManager
 	chainId             *big.Int
 	isFinalized         bool
-	enable              bool
 	rollupEpochMaxBlock uint64
 	metrics             *metrics.Metrics
 	db                  *db.Store
@@ -274,18 +273,15 @@ func (o *Oracle) Start() {
 	//	}
 	//}()
 
-	if o.enable {
-		go func() {
-			for {
-				log.Info("record rollup epoch start")
-				if err := o.recordRollupEpoch(); err != nil {
-					log.Error("record rollup epoch failed", "error", err)
-					time.Sleep(30 * time.Second)
-				}
+	go func() {
+		for {
+			log.Info("record rollup epoch start")
+			if err := o.recordRollupEpoch(); err != nil {
+				log.Error("record rollup epoch failed", "error", err)
+				time.Sleep(30 * time.Second)
 			}
-		}()
-	}
-
+		}
+	}()
 }
 
 func (o *Oracle) waitReceiptWithCtx(ctx context.Context, txHash common.Hash) (*coretypes.Receipt, error) {
