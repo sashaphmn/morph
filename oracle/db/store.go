@@ -66,14 +66,17 @@ func (s *Store) WriteLatestChangeContext(changePoints types.ChangeContext) error
 }
 
 func (s *Store) ReadLatestChangePoints() types.ChangeContext {
+	var changeCtx types.ChangeContext
 	data, err := s.db.Get(changePointsKey)
-	if err != nil && !isNotFoundErr(err) {
-		panic(fmt.Sprintf("failed to read change points, err: %v", err))
+	if err != nil {
+		if !isNotFoundErr(err) {
+			panic(fmt.Sprintf("failed to read change points, err: %v", err))
+		}
+		return changeCtx
 	}
 	if err != nil {
 		panic(fmt.Sprintf("failed to sync change points, err: %v", err))
 	}
-	var changeCtx types.ChangeContext
 	if err := rlp.DecodeBytes(data, &changeCtx); err != nil {
 		panic(fmt.Sprintf("decode data to changepoint error:%v", err))
 	}
