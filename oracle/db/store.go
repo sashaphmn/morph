@@ -74,9 +74,6 @@ func (s *Store) ReadLatestChangePoints() types.ChangeContext {
 		}
 		return changeCtx
 	}
-	if err != nil {
-		panic(fmt.Sprintf("failed to sync change points, err: %v", err))
-	}
 	if err := rlp.DecodeBytes(data, &changeCtx); err != nil {
 		panic(fmt.Sprintf("decode data to changepoint error:%v", err))
 	}

@@ -13,6 +13,38 @@ import (
 	"github.com/morph-l2/go-ethereum/log"
 )
 
+func (o *Oracle) initChangePoint() error {
+	changeCtx := o.db.ReadLatestChangePoints()
+	if len(changeCtx.ChangePoints) == 0 {
+		// TODO start
+		start := 0
+		h, err := o.l2Client.HeaderByNumber(o.ctx, big.NewInt(int64(start)))
+		if err != nil {
+			return err
+		}
+		epochInterval, err := o.gov.RollupEpoch(&bind.CallOpts{
+			BlockNumber: h.Number,
+		})
+		sequencerSets, err := o.sequencer.GetCurrentSequencerSet(&bind.CallOpts{
+			BlockNumber: big.NewInt(int64(start)),
+		})
+		if err != nil {
+			return err
+		}
+		changeCtx = types.ChangeContext{
+			ChangePoints: []types.ChangePoint{types.ChangePoint{
+				TimeStamp:     h.Time,
+				BlockNumber:   h.Number.Uint64(),
+				EpochInterval: epochInterval.Uint64(),
+				Submitters:    sequencerSets,
+				ChangeType:    types.L2ChangePoint,
+			}},
+		}
+	}
+	o.ChangeCtx = changeCtx
+	return nil
+}
+
 func (o *Oracle) syncL1ChangePoint(start, end, startTime, endTime uint64) error {
 	var epochBlock []int
 	stakerAddedPoint, err := o.fetchL1StakerAdded(o.ctx, start, end)
@@ -183,13 +215,13 @@ func (o *Oracle) recordRollupEpoch() error {
 	}
 	startTime := startHeader.Time
 	endTime := endHeader.Time
-	if endTime-startTime < o.ChangeCtx.ChangePoints[0].EpochInterval*uint64(types.MaxEpochCount) {
+	if len(o.ChangeCtx.ChangePoints) != 0 && endTime-startTime < o.ChangeCtx.ChangePoints[0].EpochInterval*uint64(types.MaxEpochCount) {
 		time.Sleep(time.Duration(o.ChangeCtx.ChangePoints[0].EpochInterval*uint64(types.MaxEpochCount)) * time.Second)
 		log.Info("Too few epochs,wait... ", "startTime", startTime, "endTime", endTime)
 		return nil
 	}
 	// clean fake point
-	if o.ChangeCtx.ChangePoints[len(o.ChangeCtx.ChangePoints)-1].ChangeType != types.L1ChangePoint && o.ChangeCtx.ChangePoints[len(o.ChangeCtx.ChangePoints)-1].ChangeType != types.L2ChangePoint {
+	if len(o.ChangeCtx.ChangePoints) != 0 && o.ChangeCtx.ChangePoints[len(o.ChangeCtx.ChangePoints)-1].ChangeType != types.L1ChangePoint && o.ChangeCtx.ChangePoints[len(o.ChangeCtx.ChangePoints)-1].ChangeType != types.L2ChangePoint {
 		o.ChangeCtx.ChangePoints = o.ChangeCtx.ChangePoints[:len(o.ChangeCtx.ChangePoints)-1]
 	}
 	_, err = o.syncL2ChangePoint(l2Start, l2End)

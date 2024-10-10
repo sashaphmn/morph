@@ -226,7 +226,7 @@ func NewOracle(cfg *config.Config, m *metrics.Metrics) (*Oracle, error) {
 		)
 	}
 
-	return &Oracle{
+	o := &Oracle{
 		l1Client:            l1Client,
 		l2Client:            l2Client,
 		db:                  store,
@@ -250,7 +250,11 @@ func NewOracle(cfg *config.Config, m *metrics.Metrics) (*Oracle, error) {
 		ctx:                 ctx,
 		rollupEpochMaxBlock: cfg.MaxSize,
 		metrics:             m,
-	}, nil
+	}
+	if err = o.initChangePoint(); err != nil {
+		return nil, err
+	}
+	return o, nil
 }
 
 func (o *Oracle) Start() {
