@@ -182,7 +182,7 @@ func (o *Oracle) recordRollupEpoch() error {
 	}
 
 	if lastEpoch.Index == nil {
-		header, err := o.l2Client.HeaderByNumber(o.ctx, big.NewInt(1))
+		header, err := o.l2Client.HeaderByNumber(o.ctx, big.NewInt(0))
 		if err != nil {
 			return fmt.Errorf("quert first block header error:%v", err)
 		}
@@ -255,7 +255,7 @@ func (o *Oracle) recordRollupEpoch() error {
 	}
 	if len(epochs) == 0 {
 		time.Sleep(defaultSleepTime)
-		log.Info("rollup epoch count too small", "startTime", lastEpoch.StartTime, "index", lastEpoch.Index)
+		log.Info("rollup epoch count too small", "startTime", lastEpoch.StartTime, "index", lastEpoch.Index, "infoLength", len(epochs))
 		return nil
 	}
 	log.Info("submit rollup epoch infos", "l1Start", l1Start, "l1End", l1End, "l2Start", l2Start, "l2End", l2End, "infoLength", len(epochs))
